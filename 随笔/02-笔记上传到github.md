@@ -1,6 +1,6 @@
 今天一不小心把一篇博客误删了，然后花了点时间补的一篇。然后导致写的没有以前那么详细。这样对自己以后学习回顾和其他人阅读都不太友好，于是我决定将博客文章上传到github备份一份。这样我就可以不用再为误删博客而发愁了。
 
-github地址为：https://github.com/catfish18674282560/my_blog_article
+github地址为：https://github.com/catfish18674282560/article
 
 如果想看笔记的也可以看一下。
 
