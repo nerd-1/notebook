@@ -232,7 +232,7 @@ book = Book.objects.create_book("Pride and Prejudice")
 ### clean
 
 ```python
-from django.core.exceptions import ValidationErrors
+from django.core.exceptions import ValidationError
 
 def clean(self):
     if self.comment_type == 0 and len(self.content)== 0 :
