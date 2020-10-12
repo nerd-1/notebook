@@ -398,6 +398,10 @@ class PersonAdmin(admin.ModelAdmin):
 
 默认为True。如果您的模型有get_absolute_url()方法，但您不想显示“现场查看”按钮，则只需将其设置 view_on_sit为False
 
+### autocomplete_fields
+
+给外键加一个搜索框。适用于外键较多的情况下。
+
 ## ModelAdmin方法
 
 ModelAdmin有丰富的内置方法，就把他们当作钩子函数吧。
