@@ -77,6 +77,8 @@ repeat（默认），no-repeat，repeat-x，repeat-y
 
 ###  background-position
 
+规定背景图片的位置。
+
 ```css
 div{
     width: 500px;
