@@ -210,6 +210,51 @@ def my_view(request):
 
 只允许head和get方法。
 
+### csrf_exempt
+
+装饰器，取消django的csrf的限制，用法如下：
+
+```python
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def index(request):
+    ...
+```
+
+这是在函数中使用csrf装饰器，如果是类视图应该这么用：
+
+```python
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views import View
+from django.http import HttpResponse
+
+@method_decorator(csrf_exempt, name="dispatch")
+class CorseList(View):
+    def get(self, request):
+        return HttpResponse("你好世界！")
+        
+    def post(self, request):
+        return HttpResponse("你好世界！")
+```
+
+或者直接在post函数上装饰：
+
+```python
+from django.views.decorators.csrf import csrf_exempt
+from django.views import View
+from django.http import HttpResponse
+
+class CorseList(View):
+    def get(self, request):
+        return HttpResponse("你好世界！")
+    
+    @csrf_exempt  
+    def post(self, request):
+        return HttpResponse("你好世界！")
+```
+
 ## HttpRequest对象
 
 详情请参考：[https://docs.djangoproject.com/en/3.1/ref/request-response/#httprequest-objects](https://docs.djangoproject.com/en/3.1/ref/request-response/#httprequest-objects)
