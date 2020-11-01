@@ -1,0 +1,41 @@
+下载链接：[https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z)
+
+进入后会过几秒会自动下载。然后解压到相关文件夹。
+
+然后到系统环境中配置path环境变量即可。
+
+## 使用
+
+在一个文件目录下创建一个`a.c`文件，并写入以下代码：
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    printf("hello world!");
+    return 0;
+}
+```
+
+然后打开终端cd到相关目录，然后输入命令：
+
+```shell
+gcc a.c -o hello.exe
+```
+
+这句话的意思就是将当前目录下的`a.c`文件编译成`hello.exe`文件。然后到终端中使用`hello.exe`文件即可：
+
+```shell
+hello.exe
+```
+
+然后就可以看到程序输出：
+
+```shell
+hello world!
+```
+
+## 参考网站
+
+[https://www.cnblogs.com/czlhxm/p/11794743.html](https://www.cnblogs.com/czlhxm/p/11794743.html)

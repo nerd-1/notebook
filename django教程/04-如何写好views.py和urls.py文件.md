@@ -259,6 +259,14 @@ class CorseList(View):
 
 详情请参考：[https://docs.djangoproject.com/en/3.1/ref/request-response/#httprequest-objects](https://docs.djangoproject.com/en/3.1/ref/request-response/#httprequest-objects)
 
+### requet.POST
+
+接受请求的表单数据。
+
+### request.body
+
+`django`中的`request.POST`只能取到Content-Type(请求头)为`application/x-www-form-urlencoded`(form表单默认格式)的数据，如果请求头为`application/json`(json格式)，`multipart/form-data`(文件)等格式无法取到，只有在`request.body`里面能取到原生的数据。当发送过来的是JSON数据是，request.POST取到的数据是空的，这时只有用request.body取，再反序列化才能使用。
+
 ## HttpResponse对象
 
 详情请参考：[https://docs.djangoproject.com/en/3.1/ref/request-response/#httpresponse-objects](https://docs.djangoproject.com/en/3.1/ref/request-response/#httpresponse-objects)
