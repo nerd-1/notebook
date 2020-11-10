@@ -12,3 +12,8 @@ js：https://www.houdunren.com/Edu/lesson/329
 
 黑客
 sql注入：https://www.bilibili.com/video/BV1Q54y1D7VV?from=search&seid=5150861341697912436
+web安全学习笔记：https://websec.readthedocs.io/zh/latest/basic/index.html
+
+洛谷作业：https://www.luogu.com.cn/team/30198
+
+【Markdown】希腊字母表：https://blog.csdn.net/krone_/article/details/99710062

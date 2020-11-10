@@ -143,8 +143,21 @@ let a = ["catfish",];
 let set = new WeakSet();
 set.add(a);
 a = null;
-console.log(set);
+console.log(set);  // 输出：No properties 注意，多刷新几次，一般页面刷新四次了才会出现
 ```
 
 由于它有弱引用性质，所以用来储存数据比较好，当我们删掉一个数据时，不需要在WeakSet中也删除掉该数据。
 
+### 为什么在谷歌浏览器中要刷新四次才出现？
+
+原因如下：
+
+<img width="100%" src="https://upload-images.jianshu.io/upload_images/18750334-5102434773acb297.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+翻译如下：
+
+DevTools被打开之前记录的消息被保存在一个缓冲区中。对象预览需要更多的CPU周期。这是在保留消息和不使用太多内存之间的权衡。毕竟，DevTools可能不会被打开。
+
+简而言之，是谷歌自己这么设计的，为了提高性能。
+
+（不居功）这个问题的发现不是归功于我，而是来自于一个朋友。
