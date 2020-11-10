@@ -1,0 +1,153 @@
+﻿-支付宝SDK--------------------------------------------------------------------------------------------------------------------------------------
+    https://github.com/fzlee/alipay/blob/master/README.zh-hans.md
+    （1）安装
+        pip install python-alipay-sdk
+    
+    （2）生成密钥   https://opendocs.alipay.com/open/291/105971
+        1）使用支付宝工具生成密钥
+            1）选择
+                密钥长度: RSA2
+                密钥格式: RKCS1(非Java适用)
+            2）点击"生成密钥"
+            3）打开生成的"应用私钥.txt"文件，在文件第一行及最后一行添加下面字符串。
+                -----BEGIN RSA2 PRIVATE KEY-----
+                私钥
+                -----END RSA2 PRIVATE KEY-----
+
+        2）将支付宝工具生成的应用公钥上传
+            1）地址
+                https://openhome.alipay.com/platform/appDaily.htm
+            2）点击"RSA2(SHA256)密钥(推荐)"设置
+            3）选择"公钥"，再将支付宝工具生成的"应用公钥"粘贴到"填写公钥字符"中。
+            4）将"支付宝公钥"字符串复制到".txt"文件中，并在第一行及最后一行添加下面字符串。
+                -----BEGIN PUBLIC KEY-----
+                公钥
+                -----END PUBLIC KEY-----
+
+
+    （4）初始化支付宝对象（注意该对象不能写在settings.py文件中）
+        # payment/Alipay.py
+        from alipay import AliPay
+
+os.path.join(settings.BASE_DIR, "payment", "", "app_private_key.txt")
+        app_private_key_string = open("app_private_key.txt").read()         # 读取应用私钥
+        alipay_public_key_string = open("app_public_key.txt").read()       # 读取支付宝公钥
+        alipay = AliPay(
+            appid="",                                           # 支付宝开放平台的APPID
+            app_notify_url=None,                                # 支付成功验证地址，一般与return_url一致。（本地测试可以指定http://127.0.0.1:8000/xx/xxx/）
+            app_private_key_string=app_private_key_string, 
+            alipay_public_key_string=alipay_public_key_string,
+            sign_type="RSA2",
+            debug=False                                         # 是否测试环境
+        )
+
+    （5）付款视图函数
+        from django.shortcuts import render, redirect
+        from django.views.generic import View
+        from payment.Alipay import alipay           # 导入初始化支付宝对象
+        class Pay(View):
+            def get(self, request):
+                # 支付页面数据初始化
+                order_string = alipay.api_alipay_trade_page_pay(
+                    subject = "",                     # 商品名
+                    out_trade_no = "",                # 订单号
+                    total_amount = 100,               # 交易金额，必须是字符串
+                    return_url = None,                 # 支付成功后接收GET请求的url地址(回调地址)（必须指定，线上模式需要与支付宝后台设置的回调一致。本地测试可以指定http://127.0.0.1:8000/xx/xxx/）
+                    notify_url=None,                  # 支付成功后接收POST请求的url地址（可以为None）
+                )
+                # 拼接支付页面url
+                pay_url = f"https://openapi.alipaydev.com/gateway.do?{order_string}"
+                # 线上环境用该url
+                # pay_url = f"https://openapi.alipay.com/gateway.do?{order_string}"
+                return redirect(pay_url)
+
+    （6）付款成功后视图函数
+        from django.shortcuts import render, redirect
+        from django.views.generic import View
+        from payment.Alipay import alipay           # 导入初始化支付宝对象
+        class PaySuccess(View):
+            # 支付成功后跳转页面
+            def get(self, request):
+                data = request.GET.dict()           # 获取请求参数
+                sign = data.pop("sign","")          # 删除并返回签名
+                result = alipay.verify(data, sign)  # 校对参数，返回布尔值（但是不知道为啥一直不成功，可以先忽略）
+                if result and data["trade_status"] in ["TRADE_SUCCESS", "TRADE_FINISHED"]:
+                    # 验证成功
+                else:
+                    # 验证失败
+
+    （7）问题
+        1）支付成功后支付宝发送GET请求，在视图中不知道为啥一直验证参数失败
+            data = request.GET.dict()          
+            sign = data.pop("sign","")          
+            result = alipay.verify(data, sign)  # 校对参数（但是不知道为啥一直不成功）
+            if result and data["trade_status"] in ["TRADE_SUCCESS", "TRADE_FINISHED"]:
+                # 验证成功
+            else:
+                # 验证失败
+
+        2）支付成功后支付宝会发送POST请求，尝试在POST请求视图中验证参数。但可能因为CSRF无法接收到POST请求。
+
+        3）网站支付接口参数说明
+            https://opendocs.alipay.com/open/60/104790
+
+        4）手机网站支付成功后回调参数说明
+            1）支付宝发送GET请求参数说明
+                https://opendocs.alipay.com/open/60/104790#%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC%E5%90%8C%E6%AD%A5%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E
+            2）支付宝发送POST请求参数说明。
+                https://opendocs.alipay.com/open/60/104790#%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC%E5%90%8C%E6%AD%A5%E9%80%9A%E7%9F%A5%E9%A1%B5%E9%9D%A2%E7%89%B9%E6%80%A7
+    
+    （8）注意
+        1）开发者处理注意事项
+            https://opendocs.alipay.com/open/62/104747
+        5）手机网站支付成功后接收notify_url的视图函数要求
+            1）视图结束前必须return HttpResponse("success")，否则支付宝会不断继续发送通知。
+            2）视图中不能执行页面跳转，否则支付宝会收不到success字符。
+            3）cookies、session等在此页面会失效，即无法获取这些数据
+            4）该方式的调试必须在服务器上进行
+            
+    （9）CDK方法 API   https://opendocs.alipay.com/apis/api_1/alipay.trade.query#%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0
+        0）接口命名规则：
+            例如支付宝官方接口"alipay.trade.page.pay"，在CDK中可调用".api_alipay_trade_page_pay()"方法。
+            api_ + 支付宝接口名.replace(".", "_")
+
+        1）交易查询
+            .api_alipay_trade_query(out_trade_no=None, trade_no=None)
+            {'code': '10000',                         # 10000表示成功
+            'msg': 'Success',               
+            'buyer_logon_id': 'ocq***@sandbox.com',   # 买家支付宝账号（如: "159****5620"）
+            'buyer_pay_amount': '0.00',               # 买家实付金额
+            'receipt_amount': '0.00',                 # 实收金额
+            'buyer_user_id': '2088102181114113',      # 买家支付宝用户ID
+            'buyer_user_type': 'PRIVATE',             # 买家用户类型，CORPORATE:企业用户；PRIVATE:个人用户。
+            'invoice_amount': '0.00',                 # 交易中用户支付的可开具发票的金额
+            'out_trade_no': '20150320010101001',      # 商家订单号
+            'send_pay_date': '2020-09-07 14:14:21',   # 打款给卖家的时间
+            'total_amount': '50.00',                  # 订单金额(支付时total_amount参数)
+            'trade_no': '2020090722001414110509638',  # 支付宝交易号
+            'trade_status': 'TRADE_SUCCESS'}          # 交易状态: WAIT_BUYER_PAY交易创建，等待买家付款。TRADE_CLOSED未付款交易超时关闭，或支付完成后全额退款。TRADE_SUCCESS交易支付成功。TRADE_FINISHED交易结束，不可退款。（只有TRADE_SUCCESS、TRADE_FINISHED才表示收到钱了）
+
+        2）PC端支付页面
+            .api_alipay_trade_page_pay(subject, out_trade_no, total_amount, return_url=None, notify_url=None, **kwargs)
+
+
+## 遇到的问题
+
+
+
+### 支付宝存在钓鱼风险
+
+
+
+把登陆了的支付宝页面关闭，并ctrl+shift+delete删除浏览器缓存再重新访问即可。
+
+### 码已失效,请刷新二维码后重试
+
+
+
+最近在做支付宝电脑网站支付开发时，使用官方sdk运行后，扫描生成的付款二维码提示：码已失效，请刷新二维码后重试。
+
+导致这种错误的原因是我们使用了正式环境的支付宝APP扫描的沙箱环境下的付款二维码 
+
+
+解决办法: 就是使用沙箱版本的支付宝APP扫描或者使用沙箱版本的支付宝账号密码登录付款即可。

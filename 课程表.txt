@@ -1,0 +1,14 @@
+数学建模：https://www.bilibili.com/video/BV1kC4y1a7Ee?p=24
+
+高等数学：https://www.bilibili.com/video/BV1UW411k7Jv?p=24
+线性代数：https://www.bilibili.com/video/BV1aW411Q7x1?p=4
+
+英语语法：https://www.bilibili.com/video/BV1sE411p73N?p=1
+
+C语言：https://www.bilibili.com/video/BV14D4y1o7JT?p=5
+vscode C语言环境的配置：https://www.cnblogs.com/czlhxm/p/11794743.html
+
+js：https://www.houdunren.com/Edu/video/13117
+
+黑客
+sql注入：https://www.bilibili.com/video/BV1Q54y1D7VV?from=search&seid=5150861341697912436

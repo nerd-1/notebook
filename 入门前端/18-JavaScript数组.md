@@ -201,6 +201,24 @@ console.log(al);   // 输出["314", "1257", "2827"]
 
 对数组中每一个元素调用一次回调函数返回true或者false，根据true和false筛选数组中的元素。该函数也接受三个参数，第一个是值，第二个是下标，第三个是原数组。
 
+使用示例代码如下：
+
+```javascript
+let a = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+let arr = a.filter(function(item){
+    return item < 5;
+});
+console.log(arr);       // 输出 [1, 2, 3, 4]
+```
+
+如果想使用箭头语法，可以这么写：
+
+```javascript
+let a = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+let arr = a.filter(item => item < 5);
+console.log(arr);       // 输出 [1, 2, 3, 4]
+```
+
 ### reduce方法
 
 ruduce方法可以对数组中的所有元素调用指定的回调函数。该回调函数的返回值为累计结果，并且此返回值在下一次调用该回调函数时作为参数提供。该回调函数接受四个参数，第一个参数为上一次调用回调函数获得的值，第二个参数为当前元素的值，第三个元素为当前元素的下标，第四个参数为当前数组对象。
@@ -239,3 +257,31 @@ console.log(r);        // 输出456::123::def::abc
 let a = [1, 2, 3];
 console.log(Array.isArray(a))  // true
 ```
+
+### from方法
+
+Array.from() 方法从一个类似数组或可迭代对象创建一个新的，浅拷贝的数组实例。实例代码如下：
+
+```javascript
+console.log(Array.from('catfish'));      // 输出 Array ["c", "a", "t", "f", "i", "s", "h"]
+console.log(Array.from([1, 2, 3], x => x + x));   // 输出 Array [2, 4, 6]
+```
+
+### of方法
+
+Array.of() 方法创建一个具有可变数量参数的新数组实例，而不考虑参数的数量或类型。
+
+```javascript
+Array.of(7);       // [7] 
+Array.of(1, 2, 3); // [1, 2, 3]
+
+Array(7);          // [ , , , , , , ]
+Array(1, 2, 3);    // [1, 2, 3]
+```
+
+## Array静态属性
+
+### length
+
+返回数组的长度。
+
