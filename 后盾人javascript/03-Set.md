@@ -1,4 +1,4 @@
-## Set场景介绍
+## Set介绍
 
 - Set只能储存唯一值，如果有多个相同值会变成一个值：
 
@@ -106,3 +106,45 @@ console.log([...set]);          // 第二种方式转换
 let array = [1, 2, 3, 4, 5, 1, 2, 3];
 console.log([... new Set(array)]);   // 输出 [1, 2, 3, 4, 5]
 ```
+
+## WeakSet介绍
+
+里面的数据类型必须为多个对象，否则会报错。
+
+```javascript
+new WeakSet(["catfish", "catfish1921"]); //Invalid value used in weak set
+
+new WeakSet("catfish"); //Invalid value used in weak set
+
+new WeakSet([["catfish"], ["catfish1921"]]);   // WeakSet {Array(1), Array(1)}
+```
+
+WeakSet具有弱引用特性。什么是弱引用呢？
+
+我们一般自变量赋值得时候是一种用自变量引用数据类型方式。在没有自变量引用该数据时候，数据会被销毁。举例如下：
+
+```javascript
+let a = [1, 2, 3];     // 此时数据[1, 2, 3]被自变量a引用
+a = null;              // 此时a不再引用数据[1, 2, 3]，该数据会被垃圾回收销毁。
+```
+
+而弱引用，它也是引用对象，与引用的区别就是：在数据会销毁前，这个引用不算数。举例如下：
+
+```javascript
+let a = ["catfish",];
+let set = new WeakSet();
+set.add(a);            // 此时数据["catfish",]被a引用，被set弱引用
+```
+
+此时我们让a不再引用["catfish",]，那么数据销毁就会检测到没有其他地方引用（弱引用不算），这样，该数据会被销毁：
+
+```javascript
+let a = ["catfish",];
+let set = new WeakSet();
+set.add(a);
+a = null;
+console.log(set);
+```
+
+由于它有弱引用性质，所以用来储存数据比较好，当我们删掉一个数据时，不需要在WeakSet中也删除掉该数据。
+
