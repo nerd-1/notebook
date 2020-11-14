@@ -8,11 +8,19 @@
 
 ## 登陆案例讲解
 
-登陆的SQL语句：select * from admin where username="用户名" and password="用户输入的密码"。
+登陆的SQL语句：
+
+```sql
+select * from admin where username="用户名" and password="用户输入的密码"。
+```
 
 用户输入的内容可以由用户自行控制，例如何以输入' or 1=1 -- 。（--后面有一个空格）
 
-SQL语句：select * from admin where username='' or 1=1 -- 'and password ='用户输入的密码'。
+拼接成的SQL语句：
+
+```sql
+select * from admin where username='' or 1=1 -- 'and password ='用户输入的密码'。
+```
 
 其中 or 1=1永远为真，--注释后面的内容不再执行，因此sql语句会返回admin表中的所有内容。
 
@@ -27,6 +35,15 @@ SQL注入验证：
 3. and 1=2
 
 如果页面中Mysql报错，证明该页面存在SQL注入漏洞。
+
+## SQL注入普遍的思路
+
+- 发现SQL注入位置
+- 判断后台数据库类型
+- 确定XP_CMDSHELL可执行情况
+- 发现WEB虚拟目录
+- 上传ASP脚本
+- 得到管理员权限
 
 ## sqlmap基本使用
 

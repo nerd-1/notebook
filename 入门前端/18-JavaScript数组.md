@@ -167,7 +167,7 @@ let a = [2, 4, 5, 6, 8];
 a.every(f) ? console.log("都是偶数") : console.log("不全为偶数")
 ```
 
-当所有元素返回为true时，every方法返回为true，否则就返回为false。
+当所有元素返回为true时，every方法返回为true，否则就返回为false。回调函数第一个参数是遍历的每一个数，第二个参数是下标，第三个参数是数组。
 
 ### some方法
 

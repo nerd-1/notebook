@@ -108,10 +108,16 @@ console.log(m.entries());    // 输出 {"catfish" => "catfish1921", "hello" => "
 可以根据这个属性然后使用for of和forEach遍历：
 
 ```javascript
+// for of 遍历
 let m = new Map([["catfish", "catfish1921"], ["hello", "world"]]);
 for (const [key, value] of m){
-    console.log(`${key}=>${value}`)
+    console.log(`${key}=>${value}`);
 }
+// forEach 遍历
+let m = new Map([["catfish", "catfish1921"], ["hello", "world"]]);
+m.forEach((value, key) => {
+    console.log(`${key}=>${value}`);
+});
 ```
 
 ## WeakMap
@@ -125,3 +131,4 @@ for (const [key, value] of m){
 - 因为WeakMap 是弱引用，由于其他地方操作成员可能会不存在，所以不可以进行`forEach( )`遍历等操作
 - 也是因为弱引用，WeaMap 结构没有keys( )，values( )，entries( )等方法和 size 属性
 - 当键的外部引用删除时，希望自动删除数据时使用 `WeakMap`
+
