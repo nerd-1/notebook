@@ -372,6 +372,361 @@ console.log(a);         // 输出 {name: "catfish", gender: "man"}
 console.log(b);         // 输出 {name: "catfish1921", gender: "man"}
 ```
 
+## 构建函数
+
+### 工厂函数
+
+在函数中返回对象的函数称为工厂函数，工厂函数有以下优点
+
+- 减少重复创建相同类型对象的代码
+- 修改工厂函数的方法影响所有同类对象
+
+### 构造函数
+
+和工厂函数相似构造函数也用于创建对象，它的上下文为新的对象实例。使用代码如下：
+
+```javascript
+function Student(name){
+    this.name = name;
+    this.show = function(){
+        console.log(this.name);
+    }
+    // 不需要返回，系统自动返回
+    // return this
+    // 如果构造函数返回的是对象，那么实例化返回的就是对象
+}
+const handsome_man = new Student("catfish");
+handsome_man.show();
+```
+
+### 内置的构造函数
+
+JS中大部分数据类型都是通过构造函数创建的。
+
+```javascript
+const num = new Number(99);
+console.log(num.valueOf());
+
+const string = new String("后盾人");
+console.log(string.valueOf());
+
+const boolean = new Boolean(true);
+console.log(boolean.valueOf());
+
+const date = new Date();
+console.log(date.valueOf() * 1);
+
+const regexp = new RegExp("\\d+");
+console.log(regexp.test(99));
+
+let hd = new Object();
+hd.name = "后盾人";
+console.log(hd);
+```
+
+## 属性特征
+
+### 查看特征
+
+使用 `Object.getOwnPropertyDescriptor`查看对象属性的描述。
+
+```javascript
+"use strict";
+const user = {
+  name: "向军",
+  age: 18
+};
+let desc = Object.getOwnPropertyDescriptor(user, "name");
+console.log(JSON.stringify(desc, null, 2));            // 序列化JSON对象
+```
+
+使用 `Object.getOwnPropertyDescriptors`查看对象所有属性的描述
+
+```javascript
+"use strict";
+const user = {
+  name: "向军",
+  age: 18
+};
+let desc = Object.getOwnPropertyDescriptors(user);
+console.log(JSON.stringify(desc, null, 2));
+```
+
+属性包括以下四种特性
+
+| 特性         | 说明                                                   | 默认值    |
+| ------------ | ------------------------------------------------------ | --------- |
+| configurable | 能否使用delete、能否需改属性特性、或能否修改访问器属性 | true      |
+| enumerable   | 对象属性是否可通过for-in循环，或Object.keys() 读取     | true      |
+| writable     | 对象属性是否可修改                                     | true      |
+| value        | 对象属性的默认值                                       | undefined |
+
+### 设置特征
+
+使用`Object.defineProperty` 方法修改属性特性，通过下面的设置属性name将不能被遍历、删除、修改。
+
+```javascript
+"use strict";
+const user = {
+  name: "向军"
+};
+Object.defineProperty(user, "name", {
+  value: "后盾人",
+  writable: false,
+  enumerable: false,
+  configurable: false
+});
+```
+
+通过执行以下代码对上面配置进行测试，请分别打开注释进行测试
+
+```javascript
+// 不允许修改
+// user.name = "向军"; //Error
+
+// 不能遍历
+// console.log(Object.keys(user));
+
+//不允许删除
+// delete user.name;
+// console.log(user);
+
+//不允许配置
+// Object.defineProperty(user, "name", {
+//   value: "后盾人",
+//   writable: true,
+//   enumerable: false,
+//   configurable: false
+// });
+```
+
+使用 `Object.defineProperties` 可以一次设置多个属性，具体参数和上面介绍的一样。
+
+```javascript
+"use strict";
+let user = {};
+Object.defineProperties(user, {
+  name: { value: "向军", writable: false },
+  age: { value: 18 }
+});
+console.log(user);
+user.name = "后盾人"; //TypeError
+```
+
+### 禁止添加
+
+`Object.preventExtensions` 禁止向对象添加属性
+
+```javascript
+"use strict";
+const user = {
+  name: "向军"
+};
+Object.preventExtensions(user);
+user.age = 18; //Error
+```
+
+`Object.isExtensible` 判断是否能向对象中添加属性
+
+```javascript
+"use strict";
+const user = {
+  name: "向军"
+};
+Object.preventExtensions(user);
+console.log(Object.isExtensible(user)); //false
+```
+
+### 封闭对象
+
+`Object.seal()`方法封闭一个对象，阻止添加新属性并将所有现有属性标记为 `configurable: false`
+
+```javascript
+"use strict";
+const user = {
+  name: "后盾人",
+  age: 18
+};
+
+Object.seal(user);
+console.log(
+  JSON.stringify(Object.getOwnPropertyDescriptors(user), null, 2)
+);
+
+Object.seal(user);
+console.log(Object.isSealed(user));
+delete user.name; //Error
+```
+
+`Object.isSealed` 如果对象是密封的则返回 `true`，属性都具有 `configurable: false`。
+
+```javascript
+"use strict";
+const user = {
+  name: "向军"
+};
+Object.seal(user);
+console.log(Object.isSealed(user)); //true
+```
+
+### 冻结对象
+
+`Object.freeze` 冻结对象后不允许添加、删除、修改属性，writable、configurable都标记为`false`
+
+```javascript
+"use strict";
+const user = {
+  name: "向军"
+};
+Object.freeze(user);
+user.name = "后盾人"; //Error
+```
+
+`Object.isFrozen()`方法判断一个对象是否被冻结
+
+```javascript
+"use strict";
+const user = {
+  name: "向军"
+};
+Object.freeze(user);
+console.log(Object.isFrozen(user));
+```
+
+## 属性访问器
+
+getter方法用于获得属性值，setter方法用于设置属性，这是JS提供的存取器特性即使用函数来管理属性。
+
+主要用于get和set，使用方法如下：
+
+```javascript
+const web = {
+  name: "catfish",
+  url: "catfish1921.com",
+  get site() {
+    return `${this.name} ${this.url}`;
+  },
+  set site(value) {
+    [this.name, this.url] = value.split(",");
+  }
+};
+web.site = "后盾人,hdcms.com";
+console.log(web.site);           // 后盾人 hdcms.com
+```
+
+使用语法糖class：
+
+```javascript
+"use strict";
+const DATA = Symbol();
+class User {
+  constructor(name, age) {
+    this[DATA] = { name, age };
+  }
+  get name() {
+    return this[DATA].name;
+  }
+  set name(value) {
+    if (value.trim() == "") throw new Error("无效的用户名");
+    this[DATA].name = value;
+  }
+  get age() {
+    return this[DATA].name;
+  }
+  set age(value) {
+    if (value.trim() == "") throw new Error("无效的用户名");
+    this[DATA].name = value;
+  }
+}
+let hd = new User("后盾人", 33);
+console.log(hd.name);
+hd.name = "向军1";
+console.log(hd.name);
+console.log(hd);
+```
+
+## 代理拦截
+
+代理（拦截器）是对象的访问控制，`setter/getter` 是对单个对象属性的控制，而代理是对整个对象的控制。
+
+- 读写属性时代码更简洁
+- 对象的多个属性控制统一交给代理完成
+- 严格模式下 `set` 必须返回布尔值
+
+### 使用方法
+
+obj表示该对象，property表示该对象的属性，value指的是设置的值。
+
+```javascript
+"use strict";
+const hd = { name: "后盾人" };
+const proxy = new Proxy(hd, {
+  get(obj, property) {
+    return obj[property];
+  },
+  set(obj, property, value) {
+    obj[property] = value;
+    return true;
+  }
+});
+proxy.age = 10;
+console.log(hd);
+```
+
+### 代理函数
+
+如果代理以函数方式执行时，会执行代理中定义 `apply` 方法。
+
+- 参数说明：函数，上下文对象，参数
+
+下面使用 `apply` 计算函数执行时间
+
+```javascript
+function factorial(num) {
+  return num == 1 ? 1 : num * factorial(num - 1);
+}
+let proxy = new Proxy(factorial, {
+  apply(func, obj, args) {
+    console.time("run");
+    func.apply(obj, args);
+    console.timeEnd("run");
+  }
+});
+proxy.apply(this, [1, 2, 3]);
+```
+
+## JSON
+
+### 序列化
+
+第一个参数是序列化的对象，第二个参数是指定保存的属性，如果为null则保存所有属性。第三个参数可选，文本添加缩进、空格和换行符，如果 第三个参数是一个数字，则返回值文本在每个级别缩进指定数目的空格，如果 space 大于 10，则文本缩进 10 个空格。
+
+```javascript
+let hd = {
+  "title": "后盾人",
+  "url": "houdunren.com",
+  "teacher": {
+  	"name": "向军大叔",
+  }
+}
+console.log(JSON.stringify(hd, null, 4));
+```
+
+### 反序列化
+
+```javascript
+let hd = {
+  "title": "后盾人",
+  "url": "houdunren.com",
+  "teacher": {
+  	"name": "向军大叔",
+  }
+}
+let json = JSON.stringify(hd, null, 4);
+let str = JSON.parse(json);
+console.log(str);
+```
+
 ## 内置对象
 
 ### Math对象

@@ -213,6 +213,14 @@ window.addEventListener("load", function(){
 
 `console.clear` ，`console.error`，`console.table`，`console.log`，`console.warn`
 
+`console.time`，`console.timeEnd`使用方法如下：
+
+```javascript
+console.time("run");
+let a = 1+1;
+console.timeEnd("run");   // 输出 run: 0.0078125 ms
+```
+
 ### location对象
 
 ```javascript
