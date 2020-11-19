@@ -324,3 +324,15 @@ console.log(newFunc(2));
 </script>
 ```
 
+## 在DOM中使用数组的方法
+
+我们都知道，dom中查找出来的元素是个伪数组，不能够使用数组的方法。如何让他能够使用数组的方法呢？下面拿filter举个例子：
+
+```javascript
+let divs = document.querySelectorAll("div");
+divs = [].filter.call(divs, item => {
+  return item.hasAttribute("class");
+})
+console.log(divs);
+```
+
