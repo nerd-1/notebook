@@ -221,6 +221,13 @@ let a = 1+1;
 console.timeEnd("run");   // 输出 run: 0.0078125 ms
 ```
 
+`console.dir`用来输出查看该对象的原型对象，使用方法如下：
+
+```javascript
+let a = {};
+console.dir(a);
+```
+
 ### location对象
 
 ```javascript
